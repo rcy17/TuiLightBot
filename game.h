@@ -10,3 +10,4 @@ struct Game
 extern Game game; // 全局唯一的 Game 结构变量
 
 int run_game();
+bool check_path(const char *path, bool isTemplate = false);
