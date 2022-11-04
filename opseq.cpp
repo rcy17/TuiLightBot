@@ -184,5 +184,6 @@ int new_opseq(const char *path)
     }
     ofs << endl;
   }
+  delete os;
   return 0;
 }

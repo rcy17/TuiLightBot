@@ -25,7 +25,7 @@ format_string(int height, bool isBot = false, bool isLightened = false, bool isU
 
 const char *direction_string(Direction dir)
 {
-  const char *dirs[] = {"UP", "DOWN", "LEFT", "RIGHT"};
+  const char *dirs[] = {"up", "down", "left", "right"};
   return dirs[dir];
 }
 
@@ -59,12 +59,12 @@ void print_map(Map *map)
       }
       else
       {
-        bool isBot = same_position(map->robot, {r, c});
+        bool isBot = same_position(map->robot, {c, r});
         bool isLightened = false;
         bool isUnlightened = false;
         for (int i = 0; i < map->q; i++)
         {
-          if (same_position(map->lights[i], {r, c}))
+          if (same_position(map->lights[i], {c, r}))
           {
             (map->lightened[i] ? isLightened : isUnlightened) = true;
             break;

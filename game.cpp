@@ -108,7 +108,17 @@ void parse_command(const char *s)
       return;
     if (args == 1)
       strcpy(param, "main.ops");
-    run(param);
+    Result result = robot_run(param);
+    if (result.result != FILE_NOT_FOUND)
+    {
+      print_map(game.map_run);
+      const char *s[] = {
+          "Can't finish the job during the program.",
+          "Can't finish the job in given steps.",
+          "ALl lights up!"};
+      cout << s[result.result] << endl;
+      cout << "Total steps: " << result.steps << endl;
+    }
   }
   else if (strcmp(cmd, "EXIT") == 0)
   {
@@ -142,6 +152,8 @@ int run_game()
 {
   game.map = new Map{};
   game.map_run = new Map{};
+  game.limit = 100;
+  strcpy(game.autosave, "OFF");
   if (load_map("main.map"))
   {
     cerr << "Fail to load map main.map, you must create it or load another one" << endl;

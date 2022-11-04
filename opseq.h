@@ -34,3 +34,4 @@ struct OpSeq
 };
 
 int new_opseq(const char *path);
+OpType string_to_optype(const char *s);

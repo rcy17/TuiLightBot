@@ -33,3 +33,4 @@ inline bool same_position(const Position &a, const Position &b)
 void print_map(Map *map);
 int load_map(const char *path);
 int new_map();
+const char *direction_string(Direction dir);
