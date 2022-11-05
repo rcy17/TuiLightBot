@@ -4,6 +4,7 @@
 #include "game.h"
 #include "opseq.h"
 #include "run.h"
+#include "ui.h"
 
 using namespace std;
 
@@ -153,6 +154,7 @@ int run_game()
   game.map = new Map{};
   game.map_run = new Map{};
   game.limit = 100;
+  init_assets();
   strcpy(game.autosave, "OFF");
   if (load_map("main.map"))
   {
@@ -163,6 +165,7 @@ int run_game()
   {
     read_command();
   }
+  release_assets();
   delete game.map;
   delete game.map_run;
   return 0;
