@@ -23,7 +23,6 @@ void release_image(Image *img)
 
 Image *read_from_file(const char *path)
 {
-
   BMPFile *bmp = read_bmp(path);
   if (!bmp)
   {
@@ -45,7 +44,7 @@ Image *read_from_file(const char *path)
     img->data = (Pixel *)bmp->data;
     bmp->data = nullptr;
   }
-  delete bmp;
+  release_bmp(bmp);
   return img;
 }
 
@@ -57,29 +56,44 @@ void init_assets()
     cout << "Fatal: Couldn't open file" << ASSET_PATH << endl;
     exit(-1);
   }
+  // test
+  write_into_file("assets/aaa.bmp", img);
   int H = img->height, W = img->width;
-  int h = H, w = W / 4;
+  int h = H / 2, w = W / 2;
+  Pixel *temp = new Pixel[h * w];
   for (int i = 0; i < 4; i++)
   {
-    robots[i].data = new Pixel[h * w];
-    robots[i].width = w, robots[i].height = h;
+    int pr = i / 2, pc = i % 2;
     for (int r = 0; r < h; r++)
-      memcpy(&robots[i].data[r * w], &img->data[r * W + w * i], sizeof(Pixel) * w);
+      memcpy(&temp[r * w], &img->data[(pr * h + r) * W + w * pc], sizeof(Pixel) * w);
+    // assuming that we need convert 350*700 into 35*70
+    robots[i].width = w / 10;
+    robots[i].height = h / 10;
+    robots[i].data = new Pixel[h * w / 100];
+    for (int row = 0; row < h / 10; row++)
+      for (int col = 0; col < w / 10; col++)
+      {
+        int r = 0, g = 0, b = 0;
+        for (int i = 0; i < 10; i++)
+          for (int j = 0; j < 10; j++)
+          {
+            r += temp[(row * 10 + i) * w + col * 10 + j].r;
+            g += temp[(row * 10 + i) * w + col * 10 + j].g;
+            b += temp[(row * 10 + i) * w + col * 10 + j].b;
+          }
+        robots[i].data[row * w / 10 + col] = {(unsigned char)(r / 100), (unsigned char)(g / 100), (unsigned char)(b / 100)};
+      }
     // test
     char s[MAX_PATH_LEN];
     sprintf(s, "assets/%d.bmp", i);
     write_into_file(s, &robots[i]);
   }
-  // test
-  write_into_file("assets/test.bmp", draw());
 }
 
 void release_assets()
 {
   for (int i = 0; i < 4; i++)
-  {
     delete[] robots[i].data;
-  }
 }
 
 void write_into_file(const char *path, Image *image)
@@ -107,9 +121,7 @@ void write_into_file(const char *path, Image *image)
     delete[] file.data;
   }
   else
-  {
     write_bmp(path, &file);
-  }
 }
 
 Image *draw()

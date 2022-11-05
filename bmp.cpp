@@ -14,6 +14,8 @@ BMPFile *read_bmp(const char *path)
   }
   BMPFile *bmp = new BMPFile{};
   file.read((char *)bmp, sizeof(BMPHeader));
+  if (bmp->header.image_size_bytes == 0)
+    bmp->header.image_size_bytes = bmp->header.height_px * bmp->header.width_px * (bmp->header.bits_per_pixel / 8);
   bmp->data = new unsigned char[bmp->header.image_size_bytes];
   file.read((char *)bmp->data, bmp->header.image_size_bytes);
   file.close();
