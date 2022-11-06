@@ -47,7 +47,8 @@ OpSeq *read_opseq(const char *path)
         ss >> param;
         strcpy(os->procs[proc].ops[op_count].param, param);
       }
-      strcpy(os->procs[proc].ops[op_count].param, cmd);
+      else
+        strcpy(os->procs[proc].ops[op_count].param, cmd);
       os->procs[proc].ops[op_count].otp = otp;
       op_count++;
     }
@@ -150,6 +151,7 @@ Result robot_run(const char *path)
   if (os == NULL)
     return {0, FILE_NOT_FOUND};
   memcpy(game.map_run, game.map, sizeof(Map));
+  auto_save();
   Map *map = game.map_run;
   int steps = 0; // count of robot moves
   int count = 0; // count of operations for limit

@@ -1,7 +1,8 @@
 
 struct Pixel
 {
-  unsigned char r, g, b;
+  // notice: bmp use color order (b,g,r)
+  unsigned char b, g, r;
 };
 
 struct Image

@@ -155,8 +155,12 @@ int run_game()
   game.map_run = new Map{};
   game.limit = 100;
   init_assets();
-  strcpy(game.autosave, "OFF");
-  if (load_map("main.map"))
+  // test
+  // strcpy(game.autosave, "OFF");
+  strcpy(game.autosave, "img/%d.bmp");
+  // test
+  // if (load_map("main.map"))
+  if (load_map("main2.map"))
   {
     cerr << "Fail to load map main.map, you must create it or load another one" << endl;
   }
