@@ -160,7 +160,7 @@ int run_game()
   strcpy(game.autosave, "img/%d.bmp");
   // test
   // if (load_map("main.map"))
-  if (load_map("main2.map"))
+  if (load_map("main3.map"))
   {
     cerr << "Fail to load map main.map, you must create it or load another one" << endl;
   }

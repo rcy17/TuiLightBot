@@ -201,11 +201,11 @@ void pad_parallelogram(Image *img, Position start, int h, int w, int height)
 
 void draw_cell(Image *img, Position center, int h, int w, Pixel color)
 {
+  pad_cell(img, center, h, w, color);
   draw_line(img, {center.x - w, center.y}, {center.x, center.y + h}, LINE_COLOR);
   draw_line(img, {center.x - w, center.y}, {center.x, center.y - h}, LINE_COLOR);
   draw_line(img, {center.x + w, center.y}, {center.x, center.y - h}, LINE_COLOR);
   draw_line(img, {center.x + w, center.y}, {center.x, center.y + h}, LINE_COLOR);
-  pad_cell(img, center, h, w, color);
 }
 
 void draw_parallelogram(Image *img, Position start, int h, int w, int height)
@@ -254,20 +254,20 @@ void light_status(Map *map, Position p, bool *is_light, bool *is_lightened)
 
 Image *draw()
 {
-  // each cell is 100p*58p
-  // each height is 25p
+  // each cell is 200p*116p
+  // cell height is 25p
   Map *map = game.map_run;
   const int w = 200;
   const int h = 116;
-  int H = h * MAX_M + 100;
-  int W = w * MAX_N + 25 * MAX_H;
+  int H = h * MAX_M + 400;
+  int W = w * MAX_N + 25 * MAX_H + 400;
   Image *img = new Image{H, W};
   img->data = new Pixel[H * W];
   for (int i = 0; i < H; i++)
     for (int j = 0; j < W; j++)
       img->data[i * W + j] = {20, 128, 20};
-  int bias_x = w * map->n + 100;
-  int bias_y = 400;
+  int bias_x = W / 2;
+  int bias_y = (MAX_M - h * map->m) / 2 + 600 + MAX_H * 25;
   for (int r = 0; r < map->m; r++)
   {
     for (int c = 0; c < map->n; c++)
@@ -276,7 +276,7 @@ Image *draw()
       {
         // draw each cell without height
         // calculate position is boring and meaningless, just try to adjust these parameters
-        Position center = {(c - r) * w / 2 + bias_x, (r + c) * h / 2 + bias_y - CELL_HEIGHT * _h};
+        Position center = {(c - r) * w / 2 + bias_x, (r + c) * h / 2 + bias_y - (CELL_HEIGHT - 1) * _h};
         bool is_light, is_lightened;
         light_status(map, {c, r}, &is_light, &is_lightened);
         Pixel color = CELL_COLOR;
