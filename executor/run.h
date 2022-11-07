@@ -1,4 +1,4 @@
-#include "game.h"
+#include "parser/game.h"
 
 enum ResultType
 {

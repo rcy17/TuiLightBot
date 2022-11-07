@@ -5,7 +5,7 @@
 
 #include "ui.h"
 #include "bmp.h"
-#include "game.h"
+#include "parser/game.h"
 
 using namespace std;
 

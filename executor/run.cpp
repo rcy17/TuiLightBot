@@ -3,10 +3,10 @@
 #include <sstream>
 #include <cstring>
 
-#include "game.h"
+#include "parser/game.h"
 #include "run.h"
-#include "opseq.h"
-#include "ui.h"
+#include "parser/opseq.h"
+#include "painter/ui.h"
 
 using namespace std;
 

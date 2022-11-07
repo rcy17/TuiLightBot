@@ -3,8 +3,8 @@
 
 #include "game.h"
 #include "opseq.h"
-#include "run.h"
-#include "ui.h"
+#include "executor/run.h"
+#include "painter/ui.h"
 
 using namespace std;
 

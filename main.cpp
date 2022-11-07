@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include "game.h"
-#include "opseq.h"
+#include "parser/game.h"
+#include "parser/opseq.h"
 using namespace std;
 Game game;
 int main()
