@@ -7,12 +7,12 @@
 
 using namespace std;
 
-bool check_proc_name(const char *s)
+bool check_proc_name(const char *s, int p)
 {
   // MAIN or P<n>
   if (!strcmp(s, "MAIN"))
     return true;
-  return s[0] == 'P' && '0' <= s[1] && s[1] <= '9' && !s[2];
+  return s[0] == 'P' && '0' <= s[1] && s[1] <= '0' + p && !s[2];
 }
 
 bool check_file_exists(const char *path)
@@ -50,7 +50,7 @@ OpType string_to_optype(const char *s)
     return LIT;
   if (!strcmp(s, "SAVE"))
     return SAVE;
-  if (check_proc_name(s))
+  if (check_proc_name(s, MAX_PROCS))
     return CALL;
   return UNKNOWN_TYPE;
 }
@@ -58,13 +58,15 @@ OpType string_to_optype(const char *s)
 OpSeq *read_opseq()
 {
   OpSeq *os = new OpSeq{};
-  strcpy(os->procs[0].name, "MAIN");
   int proc = 0;
-  int proc_count = 1;
   int op_count = 0;
   int op_limited_count = 0;
   int on = 1;
   Map *map = game.map;
+  int proc_count = map->p;
+  strcpy(os->procs[0].name, "MAIN");
+  for (int i = 1; i < proc_count; i++)
+    sprintf(os->procs[i].name, "P%d", i);
   while (on)
   {
     cout << "[" << os->procs[proc].name << "] ";
@@ -98,26 +100,21 @@ OpSeq *read_opseq()
           cout << "Error: cmd " << cmd << " should have excctly one argument" << endl;
           continue;
         }
-        if (!check_proc_name(param))
+        if (!check_proc_name(param, map->p))
         {
           cout << "Error: " << param << " is not a legal proc name" << endl;
           continue;
         }
         int old_proc = proc;
-        for (proc = 0; proc < min(map->p, proc_count); proc++)
+        for (proc = 0; proc < proc_count; proc++)
         {
           if (!strcmp(param, os->procs[proc].name))
             break;
         }
-        if (proc == map->p)
+        if (proc == proc_count)
         {
           cout << "Error: procs limit for map (" << map->p << ") is exceeded, fail to create new proc" << endl;
           continue;
-        }
-        if (proc == proc_count)
-        {
-          strcpy(os->procs[proc].name, param);
-          proc_count++;
         }
         os->procs[old_proc].count = op_count;
         op_limited_count = op_count = 0;
@@ -171,6 +168,8 @@ int new_opseq(const char *path)
   ofstream ofs(path);
   for (int i = 0; i < os->count; i++)
   {
+    if (os->procs[i].count == 0 && i > 0)
+      continue;
     ofs << os->procs[i].name;
     for (int j = 0; j < os->procs[i].count; j++)
     {

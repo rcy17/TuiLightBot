@@ -20,8 +20,8 @@ OpSeq *read_opseq(const char *path)
   }
   OpSeq *os = new OpSeq{};
   strcpy(os->path, path);
-  int proc;
-  for (proc = 0;; proc++)
+  int proc = 0;
+  for (;;)
   {
     int op_count = 0;
     char s[MAX_PATH_LEN * MAX_OP_LEN * 2] = "";
@@ -31,7 +31,10 @@ OpSeq *read_opseq(const char *path)
     if (strlen(s) < 2)
       break;
     istringstream ss(s);
-    ss >> os->procs[proc].name;
+    char proc_name[5];
+    ss >> proc_name;
+    proc = strcmp(proc_name, "MAIN") == 0 ? 0 : proc_name[1] - '0';
+    strcpy(os->procs[proc].name, proc_name);
     while (1)
     {
       char cmd[16] = "";
@@ -54,7 +57,7 @@ OpSeq *read_opseq(const char *path)
     }
     os->procs[proc].count = op_count;
   }
-  os->count = proc;
+  os->count = game.map->p;
   return os;
 }
 
@@ -163,6 +166,8 @@ Result robot_run(const char *path)
     Executor *now = call_stack + stack_len - 1;
     if (now->op_offset == os->procs[now->proc].count)
     {
+      if (now->op_offset == 0)
+        cout << "Warning: PROC " << os->procs[now->proc].name << " is empty" << endl;
       // proc ends
       stack_len--;
       continue;
@@ -190,6 +195,8 @@ Result robot_run(const char *path)
       // it's a valid frame if and only if proc != -1
       if (call_stack[stack_len].proc >= 0)
         stack_len++;
+      else
+        cout << "Warning: PROC " << os->procs[now->proc].ops[now->op_offset].param << " doesn't exists" << endl;
       break;
     case SAVE:
       save(os->procs[now->proc].ops[now->op_offset].param);

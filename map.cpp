@@ -116,10 +116,3 @@ int load_map(const char *path)
   map->dir = int_direction(dir);
   return 0;
 }
-
-int new_map()
-{
-  Map map = {};
-  memcpy(&game.map, &map, sizeof(map));
-  return 0;
-}

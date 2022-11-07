@@ -70,15 +70,6 @@ void parse_command(const char *s)
     load_map(param);
     print_map(game.map);
   }
-  else if (strcmp(cmd, "NEW") == 0)
-  {
-    if (!check_params(cmd, 2, args))
-      return;
-    if (!new_map())
-    {
-      print_map(game.map);
-    }
-  }
   else if (strcmp(cmd, "AUTOSAVE") == 0)
   {
     if (!check_params(cmd, 2, args) || (!check_path(param, true) && strcmp(param, "OFF")))
