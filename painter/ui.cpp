@@ -13,6 +13,11 @@ Image robots[4];
 void write_into_file(const char *path, Image *image);
 Image *draw();
 
+bool same_color(const Pixel &a, const Pixel &b)
+{
+  return a.r == b.r && a.g == b.g && a.b == b.b;
+}
+
 void release_image(Image *img)
 {
   if (img)
@@ -75,14 +80,21 @@ void init_assets()
       for (int col = 0; col < w / 5; col++)
       {
         int r = 0, g = 0, b = 0;
+        bool bg = false;
         for (int i = 0; i < 5; i++)
           for (int j = 0; j < 5; j++)
           {
-            r += temp[(row * 5 + i) * w + col * 5 + j].r;
-            g += temp[(row * 5 + i) * w + col * 5 + j].g;
-            b += temp[(row * 5 + i) * w + col * 5 + j].b;
+            Pixel t = temp[(row * 5 + i) * w + col * 5 + j];
+            if (same_color(t, BG_COLOR))
+              bg = true;
+            r += t.r;
+            g += t.g;
+            b += t.b;
           }
-        robots[i].data[row * w / 5 + col] = {(unsigned char)(r / 25), (unsigned char)(g / 25), (unsigned char)(b / 25)};
+        if (bg)
+          robots[i].data[row * w / 5 + col] = BG_COLOR;
+        else
+          robots[i].data[row * w / 5 + col] = {(unsigned char)(b / 25), (unsigned char)(g / 25), (unsigned char)(r / 25)};
       }
   }
   // before: [down, right, left, up]
@@ -220,11 +232,6 @@ void draw_parallelogram(Image *img, Position start, int h, int w, int height)
   draw_line(img, {start.x + w, start.y - h + height}, {start.x, start.y + height}, LINE_COLOR);
 }
 
-bool same_color(const Pixel &a, const Pixel &b)
-{
-  return a.r == b.r && a.g == b.g && a.b == b.b;
-}
-
 void copy_asset(Image *img, Position center, Direction d)
 {
   Image *asset = robots + d;
@@ -307,7 +314,7 @@ void save(const char *path)
 {
   Image *img = draw();
   write_into_file(path, img);
-  delete img->data;
+  release_image(img);
 }
 
 void auto_save()

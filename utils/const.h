@@ -37,7 +37,7 @@
 
 #define BG_COLOR \
   {              \
-    163, 73, 164 \
+    164, 73, 163 \
   }
 
 #define CELL_HEIGHT 25
