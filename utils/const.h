@@ -40,5 +40,5 @@
     164, 73, 163 \
   }
 
-#define CELL_HEIGHT 25
+#define CELL_HEIGHT 35
 #define ASSET_PATH "assets/robot.bmp"

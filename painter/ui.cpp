@@ -301,12 +301,14 @@ Image *draw()
           draw_line(img, {center.x, center.y + h / 2}, {center.x, center.y + h / 2 + CELL_HEIGHT / 2}, LINE_COLOR);
         }
       }
+      if (r == map->robot.y && c == map->robot.x)
+      {
+        // Draw the robot
+        Position center = {(c - r) * w / 2 + bias_x, (r + c) * h / 2 + bias_y - CELL_HEIGHT * map->height[r][c] + 30};
+        copy_asset(img, center, map->dir);
+      }
     }
   }
-  // Then draw the robot
-  int r = map->robot.y, c = map->robot.x;
-  Position center = {(c - r) * w / 2 + bias_x, (r + c) * h / 2 + bias_y - CELL_HEIGHT * map->height[r][c] + 30};
-  copy_asset(img, center, map->dir);
   return img;
 }
 
